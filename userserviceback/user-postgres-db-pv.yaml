@@ -1,0 +1,30 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-user-db-volume
+  labels:
+    name: postgres-user-db-volume
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 4Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+#    path: "/home/kob/work/MyWork/UniversityProject/postgresVolume/data"
+    path: "/home/kob/work/MyWork/webMarket/userVolume/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-user-db-volume-pvc
+spec:
+  storageClassName: manual
+  selector:
+    matchLabels:
+      name: postgres-user-db-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 4Gi

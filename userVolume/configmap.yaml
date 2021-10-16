@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: posgtres-config-db
+  namespace: default
+data:
+  PGPASSWORD: "postgres"

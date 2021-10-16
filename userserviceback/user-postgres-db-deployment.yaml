@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgtres-db
+  labels:
+    app: postgtres-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgtres-db
+  template:
+    metadata:
+      labels:
+        app: postgtres-db
+    spec:
+      volumes:
+        - name: postgres-user-db-data
+          persistentVolumeClaim:
+            claimName: postgres-user-db-volume-pvc
+      containers:
+        - name: postgtres-fb
+          image: postgres
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: "POSTGRES_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: user-postgres-pass
+                  key: password
+          volumeMounts:
+            - name: postgres-user-db-data
+              mountPath: /var/lib/postgresql/data
+

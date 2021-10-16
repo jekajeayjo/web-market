@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-da-app
+  labels:
+    app: kube-da-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kube-da-app
+  template:
+    metadata:
+      labels:
+        app: kube-da-app
+    spec:
+      containers:
+        - name: kube-da-app
+          image: kubda_tomcat:v1
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+              - name: "POD_IP"
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+              - name: "LOG_LEVEL"
+                value: "RELEAEY"
+              - name: "DB_HOST"
+                valueFrom:
+                  configMapKeyRef:
+                    name: posgtree-config
+                    key: DB_HOST
+#              - name: "DB_PORT"
+#                valueFrom:
+#                  configMapKeyRef:
+#                    name: posgtree-config
+#                    key: DB_PORT
+#              - name: "DB_USER"
+#                valueFrom:
+#                  configMapKeyRef:
+#                    name: posgtree-config
+#                    key: DB_USER
+#              - name: "DB_PASSWORD"
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: postgree-pass
+#                    key: password
+          envFrom:
+          - configMapRef:
+              name: posgtree-config    # Это если мы хотим все ресурсы взять с конфига

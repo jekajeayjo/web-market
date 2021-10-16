@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgtres-app
+  labels:
+    app: postgtres-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgtres-app
+  template:
+    metadata:
+      labels:
+        app: postgtres-app
+    spec:
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-volume-pvc
+      containers:
+        - name: postgtres-app
+          image: postgres
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+                        - name: "POSTGRES_PASSWORD"
+                          valueFrom:
+                            secretKeyRef:
+                              name: postgree-pass
+                              key: password
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+
+
